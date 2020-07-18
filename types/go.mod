@@ -1,3 +1,3 @@
-module go-graphql-server/types
+module github.com/zzihyeon/go-graphql-server/types
 
 go 1.13

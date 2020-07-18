@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	types "./types"
+	types "github.com/zzihyeon/go-graphql-server/types"
 
 	"github.com/friendsofgo/graphiql"
 	graphql "github.com/graph-gophers/graphql-go"
