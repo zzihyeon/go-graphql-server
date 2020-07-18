@@ -24,7 +24,7 @@ func (_ *query) Hello() types.StockType {
 func main() {
 	s := `
                 type Query {
-                        hello: String!
+                        hello: Stocks!
 				}
 
 				type Stocks {

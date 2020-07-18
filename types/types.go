@@ -29,7 +29,7 @@ package types
 // })
 
 type StockType struct {
-	Name   string `json:"name"`
-	Per    string `json:"name"`
-	Volume string `json:"name"`
+	Name   string `json:"name" bson:"name"`
+	Per    string `json:"per"`
+	Volume string `json:"volume"`
 }
