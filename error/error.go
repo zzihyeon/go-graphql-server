@@ -18,20 +18,20 @@ func getErrorCode(code string) types.JHErrorCode {
 	return errorCode[code]
 }
 
-func GetErrorResponse(code string, data interface{}) types.StandardResponse{
+func GetErrorResponse(code string, data interface{}) model.StandardResponse{
 	if code == ""{
-		return types.StandardResponse{
+		return model.StandardResponse{
 			Code: 0,
-			Payload:types.StandardPayload{
+			Payload:model.StandardPayload{
 				Msg: errorData.Msg,
 				Data: data,
 			}
 		}
 	} 
 	errorData := getErrorCode(code)
-	return types.StandardResponse{
+	return model.StandardResponse{
 		Code: errorData.Code,
-		Payload:types.StandardPayload{
+		Payload:model.StandardPayload{
 			Msg: errorData.Msg,
 			Data: nil,
 		}
