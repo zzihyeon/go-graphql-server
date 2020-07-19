@@ -11,23 +11,11 @@ import (
 	"github.com/zzihyeon/hackernews/graph/model"
 )
 
-func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
+func (r *mutationResolver) CreateStock(ctx context.Context, input model.NewStock) (*model.Stock, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *mutationResolver) RefreshToken(ctx context.Context, input model.RefreshTokenInput) (string, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
+func (r *queryResolver) Stocks(ctx context.Context) ([]*model.Stock, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

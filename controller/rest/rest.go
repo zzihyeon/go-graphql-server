@@ -10,8 +10,6 @@ type RestController struct {
 	gin.HandlerFunc
 }
 
-type restH gin.H
-
 func Setup(defaultPort string) {
 	var rc RestController
 	rc.setup(defaultPort)

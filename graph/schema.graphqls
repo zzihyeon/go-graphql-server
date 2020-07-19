@@ -2,45 +2,24 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Link {
-  id: ID!
-  title: String!
-  address: String!
-  user: User!
-}
-
-type User {
+type Stock {
   id: ID!
   name: String!
+  volume: String!
+  reason: [String!]!
 }
 
 type Query {
-  links: [Link!]!
+  stocks: [Stock!]!
 }
 
-input NewLink {
-  title: String!
-  address: String!
-}
-
-input RefreshTokenInput{
-  token: String!
-}
-
-input NewUser {
-  username: String!
-  password: String!
-}
-
-input Login {
-  username: String!
-  password: String!
+input NewStock {
+  id: ID!
+  name: String!
+  volume: String!
+  reason: [String!]!
 }
 
 type Mutation {
-  createLink(input: NewLink!): Link!
-  createUser(input: NewUser!): String!
-  login(input: Login!): String!
-  # we'll talk about this in authentication section
-  refreshToken(input: RefreshTokenInput!): String!
+  createStock(input: NewStock!): Stock!
 }
