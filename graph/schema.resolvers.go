@@ -9,13 +9,18 @@ import (
 
 	"github.com/zzihyeon/go-graphql-server/graph/generated"
 	"github.com/zzihyeon/go-graphql-server/graph/model"
+	"github.com/zzihyeon/go-graphql-server/service/stocks"
 )
 
-func (r *mutationResolver) CreateStock(ctx context.Context, input model.NewStock) (*model.Stock, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *mutationResolver) CreateStock(ctx context.Context, input model.NewStock) (*model.StandardResponse, error) {
+	return stocks.Create(input), nil
 }
 
-func (r *queryResolver) Stocks(ctx context.Context) ([]*model.Stock, error) {
+func (r *mutationResolver) DeleteStock(ctx context.Context, input string) (*model.StandardResponse, error) {
+	return stocks.Delete(input), nil
+}
+
+func (r *queryResolver) Stocks(ctx context.Context) (*model.StandardResponse, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

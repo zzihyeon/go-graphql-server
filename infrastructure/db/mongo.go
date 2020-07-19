@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func Setup() {
+func Setup() *mongo.Client {
 	var config types.EnvConfig
 	data, err := ioutil.ReadFile("config/development.json")
 	json.Unmarshal(data, &config)
@@ -34,4 +34,5 @@ func Setup() {
 	}
 
 	fmt.Println("Connected to MongoDB!")
+	return client
 }

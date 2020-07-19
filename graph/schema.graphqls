@@ -3,23 +3,33 @@
 # https://gqlgen.com/getting-started/
 
 type Stock {
-  id: ID!
   name: String!
   volume: String!
   reason: [String!]!
 }
 
+type StandardResponse {
+	Code: Int!
+	Payload: StandardPayload!
+}
+
+type StandardPayload {
+	Msg:  String
+	Data: Any
+}
+
+scalar Any
 type Query {
-  stocks: [Stock!]!
+  stocks: StandardResponse!
 }
 
 input NewStock {
-  id: ID!
   name: String!
   volume: String!
   reason: [String!]!
 }
 
 type Mutation {
-  createStock(input: NewStock!): Stock!
+  createStock(input: NewStock!): StandardResponse!
+  deleteStock(input: String!): StandardResponse!
 }

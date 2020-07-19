@@ -45,14 +45,24 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Mutation struct {
 		CreateStock func(childComplexity int, input model.NewStock) int
+		DeleteStock func(childComplexity int, input string) int
 	}
 
 	Query struct {
 		Stocks func(childComplexity int) int
 	}
 
+	StandardPayload struct {
+		Data func(childComplexity int) int
+		Msg  func(childComplexity int) int
+	}
+
+	StandardResponse struct {
+		Code    func(childComplexity int) int
+		Payload func(childComplexity int) int
+	}
+
 	Stock struct {
-		ID     func(childComplexity int) int
 		Name   func(childComplexity int) int
 		Reason func(childComplexity int) int
 		Volume func(childComplexity int) int
@@ -60,10 +70,11 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	CreateStock(ctx context.Context, input model.NewStock) (*model.Stock, error)
+	CreateStock(ctx context.Context, input model.NewStock) (*model.StandardResponse, error)
+	DeleteStock(ctx context.Context, input string) (*model.StandardResponse, error)
 }
 type QueryResolver interface {
-	Stocks(ctx context.Context) ([]*model.Stock, error)
+	Stocks(ctx context.Context) (*model.StandardResponse, error)
 }
 
 type executableSchema struct {
@@ -93,6 +104,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateStock(childComplexity, args["input"].(model.NewStock)), true
 
+	case "Mutation.deleteStock":
+		if e.complexity.Mutation.DeleteStock == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteStock_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteStock(childComplexity, args["input"].(string)), true
+
 	case "Query.stocks":
 		if e.complexity.Query.Stocks == nil {
 			break
@@ -100,12 +123,33 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Stocks(childComplexity), true
 
-	case "Stock.id":
-		if e.complexity.Stock.ID == nil {
+	case "StandardPayload.Data":
+		if e.complexity.StandardPayload.Data == nil {
 			break
 		}
 
-		return e.complexity.Stock.ID(childComplexity), true
+		return e.complexity.StandardPayload.Data(childComplexity), true
+
+	case "StandardPayload.Msg":
+		if e.complexity.StandardPayload.Msg == nil {
+			break
+		}
+
+		return e.complexity.StandardPayload.Msg(childComplexity), true
+
+	case "StandardResponse.Code":
+		if e.complexity.StandardResponse.Code == nil {
+			break
+		}
+
+		return e.complexity.StandardResponse.Code(childComplexity), true
+
+	case "StandardResponse.Payload":
+		if e.complexity.StandardResponse.Payload == nil {
+			break
+		}
+
+		return e.complexity.StandardResponse.Payload(childComplexity), true
 
 	case "Stock.name":
 		if e.complexity.Stock.Name == nil {
@@ -197,25 +241,35 @@ var sources = []*ast.Source{
 # https://gqlgen.com/getting-started/
 
 type Stock {
-  id: ID!
   name: String!
   volume: String!
   reason: [String!]!
 }
 
+type StandardResponse {
+	Code: Int!
+	Payload: StandardPayload!
+}
+
+type StandardPayload {
+	Msg:  String
+	Data: Any
+}
+
+scalar Any
 type Query {
-  stocks: [Stock!]!
+  stocks: StandardResponse!
 }
 
 input NewStock {
-  id: ID!
   name: String!
   volume: String!
   reason: [String!]!
 }
 
 type Mutation {
-  createStock(input: NewStock!): Stock!
+  createStock(input: NewStock!): StandardResponse!
+  deleteStock(input: String!): StandardResponse!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -230,6 +284,20 @@ func (ec *executionContext) field_Mutation_createStock_args(ctx context.Context,
 	var arg0 model.NewStock
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalNNewStock2githubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐNewStock(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteStock_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -324,9 +392,50 @@ func (ec *executionContext) _Mutation_createStock(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Stock)
+	res := resTmp.(*model.StandardResponse)
 	fc.Result = res
-	return ec.marshalNStock2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStock(ctx, field.Selections, res)
+	return ec.marshalNStandardResponse2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStandardResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteStock(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteStock_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteStock(rctx, args["input"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.StandardResponse)
+	fc.Result = res
+	return ec.marshalNStandardResponse2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStandardResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_stocks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -358,9 +467,9 @@ func (ec *executionContext) _Query_stocks(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Stock)
+	res := resTmp.(*model.StandardResponse)
 	fc.Result = res
-	return ec.marshalNStock2ᚕᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStockᚄ(ctx, field.Selections, res)
+	return ec.marshalNStandardResponse2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStandardResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -432,7 +541,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Stock_id(ctx context.Context, field graphql.CollectedField, obj *model.Stock) (ret graphql.Marshaler) {
+func (ec *executionContext) _StandardPayload_Msg(ctx context.Context, field graphql.CollectedField, obj *model.StandardPayload) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -440,7 +549,7 @@ func (ec *executionContext) _Stock_id(ctx context.Context, field graphql.Collect
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:   "Stock",
+		Object:   "StandardPayload",
 		Field:    field,
 		Args:     nil,
 		IsMethod: false,
@@ -449,7 +558,69 @@ func (ec *executionContext) _Stock_id(ctx context.Context, field graphql.Collect
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Msg, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _StandardPayload_Data(ctx context.Context, field graphql.CollectedField, obj *model.StandardPayload) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "StandardPayload",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Data, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(interface{})
+	fc.Result = res
+	return ec.marshalOAny2interface(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _StandardResponse_Code(ctx context.Context, field graphql.CollectedField, obj *model.StandardResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "StandardResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -461,9 +632,43 @@ func (ec *executionContext) _Stock_id(ctx context.Context, field graphql.Collect
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _StandardResponse_Payload(ctx context.Context, field graphql.CollectedField, obj *model.StandardResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "StandardResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Payload, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.StandardPayload)
+	fc.Result = res
+	return ec.marshalNStandardPayload2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStandardPayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Stock_name(ctx context.Context, field graphql.CollectedField, obj *model.Stock) (ret graphql.Marshaler) {
@@ -1629,12 +1834,6 @@ func (ec *executionContext) unmarshalInputNewStock(ctx context.Context, obj inte
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
-			var err error
-			it.ID, err = ec.unmarshalNID2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "name":
 			var err error
 			it.Name, err = ec.unmarshalNString2string(ctx, v)
@@ -1684,6 +1883,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "createStock":
 			out.Values[i] = ec._Mutation_createStock(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteStock":
+			out.Values[i] = ec._Mutation_deleteStock(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -1742,6 +1946,64 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	return out
 }
 
+var standardPayloadImplementors = []string{"StandardPayload"}
+
+func (ec *executionContext) _StandardPayload(ctx context.Context, sel ast.SelectionSet, obj *model.StandardPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, standardPayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("StandardPayload")
+		case "Msg":
+			out.Values[i] = ec._StandardPayload_Msg(ctx, field, obj)
+		case "Data":
+			out.Values[i] = ec._StandardPayload_Data(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var standardResponseImplementors = []string{"StandardResponse"}
+
+func (ec *executionContext) _StandardResponse(ctx context.Context, sel ast.SelectionSet, obj *model.StandardResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, standardResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("StandardResponse")
+		case "Code":
+			out.Values[i] = ec._StandardResponse_Code(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Payload":
+			out.Values[i] = ec._StandardResponse_Payload(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var stockImplementors = []string{"Stock"}
 
 func (ec *executionContext) _Stock(ctx context.Context, sel ast.SelectionSet, obj *model.Stock) graphql.Marshaler {
@@ -1753,11 +2015,6 @@ func (ec *executionContext) _Stock(ctx context.Context, sel ast.SelectionSet, ob
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Stock")
-		case "id":
-			out.Values[i] = ec._Stock_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "name":
 			out.Values[i] = ec._Stock_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -2043,12 +2300,12 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalID(v)
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	return graphql.UnmarshalInt(v)
 }
 
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalID(v)
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2061,55 +2318,32 @@ func (ec *executionContext) unmarshalNNewStock2githubᚗcomᚋzzihyeonᚋgoᚑgr
 	return ec.unmarshalInputNewStock(ctx, v)
 }
 
-func (ec *executionContext) marshalNStock2githubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStock(ctx context.Context, sel ast.SelectionSet, v model.Stock) graphql.Marshaler {
-	return ec._Stock(ctx, sel, &v)
+func (ec *executionContext) marshalNStandardPayload2githubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStandardPayload(ctx context.Context, sel ast.SelectionSet, v model.StandardPayload) graphql.Marshaler {
+	return ec._StandardPayload(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNStock2ᚕᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStockᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Stock) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNStock2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStock(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
-func (ec *executionContext) marshalNStock2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStock(ctx context.Context, sel ast.SelectionSet, v *model.Stock) graphql.Marshaler {
+func (ec *executionContext) marshalNStandardPayload2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStandardPayload(ctx context.Context, sel ast.SelectionSet, v *model.StandardPayload) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
 		return graphql.Null
 	}
-	return ec._Stock(ctx, sel, v)
+	return ec._StandardPayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNStandardResponse2githubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStandardResponse(ctx context.Context, sel ast.SelectionSet, v model.StandardResponse) graphql.Marshaler {
+	return ec._StandardResponse(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNStandardResponse2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStandardResponse(ctx context.Context, sel ast.SelectionSet, v *model.StandardResponse) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._StandardResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -2379,6 +2613,20 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalOAny2interface(ctx context.Context, v interface{}) (interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	return graphql.UnmarshalAny(v)
+}
+
+func (ec *executionContext) marshalOAny2interface(ctx context.Context, sel ast.SelectionSet, v interface{}) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalAny(v)
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

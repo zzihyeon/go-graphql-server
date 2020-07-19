@@ -3,14 +3,22 @@
 package model
 
 type NewStock struct {
-	ID     string   `json:"id"`
 	Name   string   `json:"name"`
 	Volume string   `json:"volume"`
 	Reason []string `json:"reason"`
 }
 
+type StandardPayload struct {
+	Msg  *string     `json:"Msg"`
+	Data interface{} `json:"Data"`
+}
+
+type StandardResponse struct {
+	Code    int              `json:"Code"`
+	Payload *StandardPayload `json:"Payload"`
+}
+
 type Stock struct {
-	ID     string   `json:"id"`
 	Name   string   `json:"name"`
 	Volume string   `json:"volume"`
 	Reason []string `json:"reason"`
