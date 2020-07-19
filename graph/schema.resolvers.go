@@ -7,8 +7,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/zzihyeon/hackernews/graph/generated"
-	"github.com/zzihyeon/hackernews/graph/model"
+	"github.com/zzihyeon/go-graphql-server/graph/generated"
+	"github.com/zzihyeon/go-graphql-server/graph/model"
 )
 
 func (r *mutationResolver) CreateStock(ctx context.Context, input model.NewStock) (*model.Stock, error) {

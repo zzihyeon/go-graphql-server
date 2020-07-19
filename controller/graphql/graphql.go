@@ -7,8 +7,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/zzihyeon/hackernews/graph"
-	"github.com/zzihyeon/hackernews/graph/generated"
+	"github.com/zzihyeon/go-graphql-server/graph"
+	"github.com/zzihyeon/go-graphql-server/graph/generated"
 )
 
 type GraphqlController struct{}

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/zzihyeon/hackernews/controller/graphql"
-	"github.com/zzihyeon/hackernews/controller/rest"
+	"github.com/zzihyeon/go-graphql-server/controller/graphql"
+	"github.com/zzihyeon/go-graphql-server/controller/rest"
 )
 
 func main() {

@@ -14,7 +14,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
-	"github.com/zzihyeon/hackernews/graph/model"
+	"github.com/zzihyeon/go-graphql-server/graph/model"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -229,7 +229,7 @@ func (ec *executionContext) field_Mutation_createStock_args(ctx context.Context,
 	args := map[string]interface{}{}
 	var arg0 model.NewStock
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNNewStock2githubᚗcomᚋzzihyeonᚋhackernewsᚋgraphᚋmodelᚐNewStock(ctx, tmp)
+		arg0, err = ec.unmarshalNNewStock2githubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐNewStock(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -326,7 +326,7 @@ func (ec *executionContext) _Mutation_createStock(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.Stock)
 	fc.Result = res
-	return ec.marshalNStock2ᚖgithubᚗcomᚋzzihyeonᚋhackernewsᚋgraphᚋmodelᚐStock(ctx, field.Selections, res)
+	return ec.marshalNStock2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStock(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_stocks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -360,7 +360,7 @@ func (ec *executionContext) _Query_stocks(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.([]*model.Stock)
 	fc.Result = res
-	return ec.marshalNStock2ᚕᚖgithubᚗcomᚋzzihyeonᚋhackernewsᚋgraphᚋmodelᚐStockᚄ(ctx, field.Selections, res)
+	return ec.marshalNStock2ᚕᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStockᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2057,15 +2057,15 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewStock2githubᚗcomᚋzzihyeonᚋhackernewsᚋgraphᚋmodelᚐNewStock(ctx context.Context, v interface{}) (model.NewStock, error) {
+func (ec *executionContext) unmarshalNNewStock2githubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐNewStock(ctx context.Context, v interface{}) (model.NewStock, error) {
 	return ec.unmarshalInputNewStock(ctx, v)
 }
 
-func (ec *executionContext) marshalNStock2githubᚗcomᚋzzihyeonᚋhackernewsᚋgraphᚋmodelᚐStock(ctx context.Context, sel ast.SelectionSet, v model.Stock) graphql.Marshaler {
+func (ec *executionContext) marshalNStock2githubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStock(ctx context.Context, sel ast.SelectionSet, v model.Stock) graphql.Marshaler {
 	return ec._Stock(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNStock2ᚕᚖgithubᚗcomᚋzzihyeonᚋhackernewsᚋgraphᚋmodelᚐStockᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Stock) graphql.Marshaler {
+func (ec *executionContext) marshalNStock2ᚕᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStockᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Stock) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -2089,7 +2089,7 @@ func (ec *executionContext) marshalNStock2ᚕᚖgithubᚗcomᚋzzihyeonᚋhacker
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNStock2ᚖgithubᚗcomᚋzzihyeonᚋhackernewsᚋgraphᚋmodelᚐStock(ctx, sel, v[i])
+			ret[i] = ec.marshalNStock2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStock(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -2102,7 +2102,7 @@ func (ec *executionContext) marshalNStock2ᚕᚖgithubᚗcomᚋzzihyeonᚋhacker
 	return ret
 }
 
-func (ec *executionContext) marshalNStock2ᚖgithubᚗcomᚋzzihyeonᚋhackernewsᚋgraphᚋmodelᚐStock(ctx context.Context, sel ast.SelectionSet, v *model.Stock) graphql.Marshaler {
+func (ec *executionContext) marshalNStock2ᚖgithubᚗcomᚋzzihyeonᚋgoᚑgraphqlᚑserverᚋgraphᚋmodelᚐStock(ctx context.Context, sel ast.SelectionSet, v *model.Stock) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
