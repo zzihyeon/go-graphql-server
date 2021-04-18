@@ -7,9 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/zzihyeon/go-graphql-server/graph/generated"
-	"github.com/zzihyeon/go-graphql-server/graph/model"
-	"github.com/zzihyeon/go-graphql-server/service/stocks"
+	"go-graphql-server/graph/generated"
+	"go-graphql-server/graph/model"
+	"go-graphql-server/service/stocks"
 )
 
 func (r *mutationResolver) CreateStock(ctx context.Context, input model.NewStock) (*model.StandardResponse, error) {

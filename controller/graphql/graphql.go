@@ -4,20 +4,14 @@ import (
 	"log"
 	"net/http"
 
+	"go-graphql-server/graph"
+	"go-graphql-server/graph/generated"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/zzihyeon/go-graphql-server/graph"
-	"github.com/zzihyeon/go-graphql-server/graph/generated"
 )
 
-type GraphqlController struct{}
-
-func Setup(defaultPort string) {
-	var gc GraphqlController
-	gc.setup(defaultPort)
-}
-
-func (g *GraphqlController) setup(defaultPort string) {
+func (g *GraphqlController) register(defaultPort string) {
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
 	http.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
